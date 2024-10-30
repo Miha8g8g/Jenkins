@@ -54,7 +54,10 @@ class TestLibrary(unittest.TestCase):
         user_full_name = f"{self.user1.first_name} {self.user1.last_name}"
         self.library.remove_user(user_full_name)
         self.assertNotIn(self.book1.title, self.library.issued_books)
-
+        
+import xmlrunner 
+runner = xmlrunner.XMLTestRunner(output='test-reports') 
+unittest.main(testRunner=runner)
 
 if __name__ == '__main__':
     unittest.main()
