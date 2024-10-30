@@ -1,7 +1,7 @@
 pipeline { 
     options { timestamps() }
     environment {
-        DOCKER_CREDS = credentials('Dock_Hub_Tock') // Переменные для доступа к Docker Hub
+        DOCKER_CREDS = credentials('Dock_Hub_Tock') // Идентификатор учетных данных Jenkins для Docker Hub
     }
     agent none 
     stages {  
@@ -31,7 +31,7 @@ pipeline {
                 sh 'apk add --update python3 py3-pip' 
                 sh 'pip install xmlrunner' 
                 sh 'pip install -r requirements.txt || echo "No requirements file found"' // установка зависимостей
-                sh 'python3 tets.py' // запуск тестов, исправление на 'test.py' вместо 'tets.py'
+                sh 'python3 tets.py' // запуск тестов
             } 
             post { 
                 always { 
@@ -50,12 +50,17 @@ pipeline {
             agent any
             steps {
                 script {
-                    sh 'echo $DOCKER_CREDS_PSW | docker login --username $DOCKER_CREDS_USR --password-stdin' // Логин в Docker Hub
-                    sh 'docker build -t miha8g8g/notes:latest .' // Сборка Docker-образа
-                    sh 'docker push miha8g8g/notes:latest' // Публикация Docker-образа
+                    // Проверка, что переменные заполнены
+                    echo "Using Docker Username: $DOCKER_CREDS_USR"
+                    
+                    // Логин в Docker Hub
+                    sh 'echo $DOCKER_CREDS_PSW | docker login --username $DOCKER_CREDS_USR --password-stdin' 
+                    
+                    // Сборка и публикация Docker-образа
+                    sh 'docker build -t miha8g8g/notes:latest .' 
+                    sh 'docker push miha8g8g/notes:latest' 
                 }
             } 
         } // stage Publish
     } // stages
 } // pipeline
-
