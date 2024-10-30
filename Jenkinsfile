@@ -1,7 +1,7 @@
 pipeline { 
     options { timestamps() }
     environment {
-        DOCKER_CREDS = credentials('Dock_Hub') // Идентификатор учетных данных Jenkins для Docker Hub
+        DOCKER_CREDS = credentials('Dock_Hub_Tock') 
     }
     agent none 
     stages {  
