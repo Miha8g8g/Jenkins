@@ -9,13 +9,12 @@ RUN apt-get update && \
     ca-certificates \
     curl \
     gnupg2 \
-    software-properties-common
+    software-properties-common && \
+    mkdir -p /etc/apt/keyrings
 
 # Добавление ключа и репозитория Docker
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    apt-key fingerprint 0EBFCD88 && \
-    add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bullseye stable" > /etc/apt/sources.list.d/docker.list
 
 # Установка Docker CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
@@ -25,3 +24,4 @@ USER jenkins
 
 # Установка плагинов Jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
+
